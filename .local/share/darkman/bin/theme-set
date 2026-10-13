@@ -1,0 +1,372 @@
+#!/bin/sh
+# ~/.local/share/theme/bin/theme-set
+#
+# set -ue
+
+THEME_DIR="$HOME/.local/share/darkman"
+MODE="${1:-}"
+
+warn() { printf 'theme-set: WARNING: %s\n' "$*" >&2; }
+log()  { printf 'theme-set: %s\n' "$*"; }
+
+case "$MODE" in
+	dark|light) ;;
+	*)
+		echo "Usage: theme-set <dark|light>" >&2
+		exit 1
+		;;
+esac
+
+SRC="$THEME_DIR/themes/$MODE"
+
+mkdir -p "$THEME_DIR" 2>/dev/null || true
+printf '%s\n' "$MODE" > "$THEME_DIR/mode"
+
+## Helpers
+
+have() {
+	command -v "$1" >/dev/null 2>&1
+}
+
+running() {
+	have pgrep || return 1
+	pgrep -x "$1" >/dev/null 2>&1
+}
+
+app_signal() {
+	sig="$1"
+	name="$2"
+
+	have pgrep || return 0
+
+	pids=$(pgrep -x "$name" 2>/dev/null) || return 0
+
+	for pid in $pids; do
+		kill -s "$sig" "$pid" 2>/dev/null || true
+	done
+
+	return 0
+}
+
+stop_app() {
+	name="$1"
+
+	have pgrep || return 0
+
+	pids=$(pgrep -x "$name" 2>/dev/null) || return 0
+	[ -n "$pids" ] || return 0
+
+	for pid in $pids; do
+		kill -s TERM "$pid" 2>/dev/null || true
+	done
+
+	i=0
+	while [ "$i" -lt 20 ]; do
+		if ! pgrep -x "$name" >/dev/null 2>&1; then
+			return 0
+		fi
+
+		# Fractional sleep; fall back if unsupported.
+		sleep 0.1 2>/dev/null || sleep 1
+
+		i=$((i + 1))
+	done
+
+	warn "$name did not stop quickly; sending KILL"
+
+	pids=$(pgrep -x "$name" 2>/dev/null) || return 0
+	for pid in $pids; do
+		kill -s KILL "$pid" 2>/dev/null || true
+	done
+
+	return 0
+}
+
+spawn() {
+	if have setsid; then
+		setsid "$@" >/dev/null 2>&1 < /dev/null &
+	else
+		"$@" >/dev/null 2>&1 < /dev/null &
+	fi
+}
+
+copy_file() {
+	src="$1"
+	dest="$2"
+
+	if [ ! -f "$src" ]; then
+		warn "missing theme file: $src"
+		return 0
+	fi
+
+	if have install; then
+		install -Dm644 "$src" "$dest" >/dev/null 2>&1 ||
+			warn "failed copy: $src -> $dest"
+	else
+		destdir=$(dirname "$dest")
+		mkdir -p "$destdir" 2>/dev/null ||
+			warn "failed mkdir: $destdir"
+
+		cp -f "$src" "$dest" 2>/dev/null ||
+			warn "failed copy: $src -> $dest"
+	fi
+
+	return 0
+}
+
+## Application handlers
+
+apply_mango() {
+	copy_file "$SRC/mango.conf" "$HOME/.config/mango/theme.conf"
+	echo "$MODE" > "$HOME/.config/mango/mode"
+	return 0
+}
+
+apply_gtk() {
+	if have gsettings; then
+		if [ "$MODE" = "dark" ]; then
+			GTK_NAME="Adwaita-dark"
+		else
+			GTK_NAME="Adwaita"
+		fi
+
+		gsettings set org.gnome.desktop.interface color-scheme "prefer-$MODE" \
+			>/dev/null 2>&1 || warn "gsettings color-scheme failed"
+
+		gsettings set org.gnome.desktop.interface gtk-theme "$GTK_NAME" \
+			>/dev/null 2>&1 || warn "gsettings gtk-theme failed"
+	else
+		warn "gsettings not found"
+	fi
+
+	return 0
+}
+
+apply_foot() {
+	mkdir -p "$HOME/.config/foot" 2>/dev/null || true
+
+	if ! printf 'initial-color-theme=%s\n' "$MODE" > "$HOME/.config/foot/color.ini" 2>/dev/null; then
+		warn "failed writing ~/.config/foot/color.ini"
+	fi
+
+	# Foot must include this file from foot.conf for this to matter.
+	# Example in foot.conf:
+	# include=~/.config/foot/color.ini
+
+	if running foot; then
+		if [ "$MODE" = dark ]; then
+			app_signal USR1 foot
+		else
+			app_signal USR2 foot
+		fi
+	fi
+
+	return 0
+}
+
+apply_fuzzel() {
+	copy_file "$SRC/fuzzel.ini" "$HOME/.config/fuzzel/color.ini"
+	return 0
+}
+
+apply_mako() {
+	copy_file "$SRC/mako" "$HOME/.config/mako/color"
+
+	if running mako; then
+		# makoctl reload if available.
+		if have makoctl && makoctl reload >/dev/null 2>&1; then
+			return 0
+		fi
+
+		# fallback: safely restart mako.
+		stop_app mako
+	fi
+
+	if have mako; then
+		if ! running mako; then
+			spawn mako
+		fi
+	else
+		warn "mako not found"
+	fi
+
+	return 0
+}
+
+apply_waybar() {
+	copy_file "$SRC/waybar.css" "$HOME/.config/waybar/color.css"
+
+	# Waybar usually reloads on SIGUSR2.
+	app_signal USR2 waybar
+
+	return 0
+}
+
+apply_nvim() {
+	mkdir -p "$HOME/.config/nvim" 2>/dev/null || true
+
+	if ! printf '%s\n' "$MODE" > "$HOME/.config/nvim/modus_state" 2>/dev/null; then
+		warn "failed writing ~/.config/nvim/modus_state"
+	fi
+
+	# WARNING:
+	# Neovim does not safely handle SIGUSR1 by default unless your config
+	# explicitly sets that up.
+	# Require: SIGUSR1 handler
+	#
+	# app_signal USR1 nvim
+
+	return 0
+}
+
+apply_btop() {
+	copy_file "$SRC/btop.theme" "$HOME/.config/btop/themes/color.theme"
+
+	# btop does not support live reload by SIGUSR1
+	# app_signal USR1 btop
+
+	return 0
+}
+
+apply_qt() {
+	copy_file "$SRC/qt5ct.conf" "$HOME/.config/qt5ct/color.conf"
+	copy_file "$SRC/qt6ct.conf" "$HOME/.config/qt6ct/color.conf"
+
+	# Usually not necessary.
+	app_signal USR1 qt5ct
+	app_signal USR1 qt6ct
+
+	return 0
+}
+
+apply_tmux() {
+	copy_file "$SRC/tmux.conf" "$HOME/.config/tmux/color.conf"
+
+	if have tmux && tmux info >/dev/null 2>&1; then
+		# Try full reload first. If that fails, try only color.conf.
+		if ! tmux source-file "$HOME/.config/tmux/tmux.conf" >/dev/null 2>&1; then
+			tmux source-file "$HOME/.config/tmux/color.conf" >/dev/null 2>&1 ||
+				warn "tmux reload failed"
+		fi
+	fi
+
+	return 0
+}
+
+apply_zathura() {
+	if [ -f "$SRC/zathura" ] || [ -L "$SRC/zathura" ]; then
+		mkdir -p "$HOME/.config/zathura" 2>/dev/null || true
+
+		cp "$SRC/zathura" "$HOME/.config/zathura/color" 2>/dev/null ||
+			warn "failed copying zathura theme"
+	else
+		warn "missing zathura include file: $SRC/zathura"
+	fi
+
+	# If this closes zathura, zathura build may not handle USR2.
+	# In that case comment this line.
+	# app_signal USR2 zathura
+
+	return 0
+}
+
+apply_cmus() {
+	copy_file "$SRC/cmus" "$HOME/.config/cmus/color"
+
+	if have cmus-remote && cmus-remote -Q >/dev/null 2>&1; then
+		cmus-remote -C "source $HOME/.config/cmus/color" \
+			>/dev/null 2>&1 || warn "cmus-remote source failed"
+	fi
+
+	return 0
+}
+
+apply_fzf() {
+	copy_file "$SRC/fzf" "$HOME/.config/fzf/color"
+	return 0
+}
+
+apply_imv() {
+	copy_file "$SRC/imv" "$HOME/.config/imv/config"
+	return 0
+}
+
+apply_swaybg() {
+	bg_file="$SRC/bg-hex"
+
+	# If dont wanna use swaybg, just remove bg-hex or remove this function
+	# from the application list below.
+	if [ ! -f "$bg_file" ]; then
+		return 0
+	fi
+
+	if ! have swaybg; then
+		warn "swaybg not found"
+		return 0
+	fi
+
+	bg=$(head -n 1 "$bg_file" 2>/dev/null | tr -d '[:space:]')
+
+	if [ -z "$bg" ]; then
+		warn "empty bg-hex file"
+		return 0
+	fi
+
+	stop_app swaybg
+	spawn swaybg -c "$bg"
+
+	return 0
+}
+
+# Run all handlers
+for app in \
+	mango \
+	gtk \
+	foot \
+	fuzzel \
+	mako \
+	waybar \
+	nvim \
+	btop \
+	qt \
+	tmux \
+	zathura \
+	cmus \
+	fzf \
+	imv \
+	swaybg
+do
+	log "applying $app"
+
+	if ! "apply_$app"; then
+		warn "$app failed"
+	fi
+done
+
+# Reload or Change env
+export GTK_THEME="Adwaita:$MODE"
+dbus-update-activation-environment --systemd GTK_THEME
+
+# INFO:
+#   * Changing theme don't take effect on the file_picker from
+#     XDG_DESKTOP_PORTAL_GTK without restarting them.
+#   * Restarting portal can break recording or screen-sharing.
+systemctl --user restart xdg-desktop-portal-gtk.service xdg-desktop-portal-wlr.service xdg-desktop-portal.service
+
+# Reload MangoWM
+if have mmsg; then
+	mmsg dispatch reload_config >/dev/null 2>&1 || true
+fi
+
+# Optional notification.
+if have notify-send; then
+	case "$MODE" in
+		dark)  label="Dark" ;;
+		light) label="Light" ;;
+	esac
+
+	notify-send -u low "Theme Changed" "$label mode activated" \
+		>/dev/null 2>&1 || true
+fi
+
+exit 0

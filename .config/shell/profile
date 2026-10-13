@@ -2,6 +2,10 @@ if [ -f ~/.config/shell/bashrc ]; then
 	. ~/.config/shell/bashrc
 fi
 
+if [ -f ~/.config/shell/bashrc ]; then
+	. ~/.config/shell/aliasrc
+fi
+
 # Default programs
 export EDITOR="nvim"
 export TERMINAL="foot"
@@ -41,4 +45,8 @@ export TEXMFVAR="$XDG_CACHE_HOME/texlive/texmf-var"
 export TEXMFCONFIG="$XDG_CONFIG_HOME/texlive/texmf-config"
 export SQLITE_HISTORY="$XDG_DATA_HOME/sqlite_history"
 
-[[ "$(fgconsole 2>/dev/null)" -eq 1 ]] && exec start_dwl > /dev/null 2>&1
+# Android tools
+export ANDROID_HOME="$HOME/Android/Sdk"
+export PATH="$ANDROID_HOME/cmdline-tools/latest/bin:$ANDROID_HOME/platform-tools:$PATH"
+
+[[ "$(fgconsole 2>/dev/null)" -eq 1 ]] && exec mango > /dev/null 2>&1

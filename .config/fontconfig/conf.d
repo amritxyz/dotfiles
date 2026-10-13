@@ -1,102 +1,65 @@
 <?xml version="1.0"?>
-<!DOCTYPE fontconfig SYSTEM "fonts.dtd">
+<!DOCTYPE fontconfig SYSTEM "urn:fontconfig:fonts.dtd">
 <fontconfig>
 
-	<!-- Anti-aliasing -->
-	<match target="pattern">
-		<edit name="antialias" mode="assign"><bool>true</bool></edit>
-	</match>
-
-
-	<!-- Hintingstyle -->
-	<match target="pattern">
-		<edit name="force_hintstyle" mode="assign"><string>hintslight</string></edit>
-	</match>
-
-
-	<!-- Force autohint, except for well hinted fonts  -->
-	<match target="pattern">
-		<edit name="force_autohint" mode="assign"><bool>false</bool></edit>
-	</match>
-
-
-	<!-- No font smoothing -->
-	<match target="pattern">
-		<edit name="force_bw" mode="assign"><bool>false</bool></edit>
-	</match>
-	<match target="pattern">
-		<edit name="force_bw_monospace" mode="assign"><bool>false</bool></edit>
-	</match>
-
-
-	<!-- LCD filter -->
-	<match target="pattern">
-		<edit name="lcdfilter" mode="assign"><const>lcddefault</const></edit>
-	</match>
-
-
-	<!-- Sub-pixel order -->
-	<match target="pattern">
-		<edit name="rgba" mode="assign"><const>rgb</const></edit>
-	</match>
-
-
-	<!-- Embedded bitmap -->
+	<!-- Rendering -->
 	<match target="font">
+		<edit name="antialias" mode="assign"><bool>true</bool></edit>
+		<edit name="hinting" mode="assign"><bool>true</bool></edit>
+		<edit name="hintstyle" mode="assign"><const>hintslight</const></edit>
+		<edit name="autohint" mode="assign"><bool>false</bool></edit>
+		<edit name="rgba" mode="assign"><const>rgb</const></edit>
+		<edit name="lcdfilter" mode="assign"><const>lcddefault</const></edit>
 		<edit name="embeddedbitmap" mode="assign"><bool>false</bool></edit>
 	</match>
-	<match target="font">
-		<test name="lang" compare="contains"><string>ja</string></test>
-		<edit name="embeddedbitmap" mode="assign"><bool>true</bool></edit>
-	</match>
-	<match target="font">
-		<test name="lang" compare="contains"><string>ko</string></test>
-		<edit name="embeddedbitmap" mode="assign"><bool>true</bool></edit>
-	</match>
-	<match target="font">
-		<test name="lang" compare="contains"><string>zh-CN</string></test>
-		<edit name="embeddedbitmap" mode="assign"><bool>true</bool></edit>
-	</match>
-	<match target="font">
-		<test name="lang" compare="contains"><string>zh-TW</string></test>
-		<edit name="embeddedbitmap" mode="assign"><bool>true</bool></edit>
-	</match>
-	<match target="font">
-		<test name="lang" compare="contains"><string>zh-HK</string></test>
-		<edit name="embeddedbitmap" mode="assign"><bool>true</bool></edit>
-	</match>
-	<match target="font">
-		<test name="lang" compare="contains"><string>zh-SG</string></test>
-		<edit name="embeddedbitmap" mode="assign"><bool>true</bool></edit>
-	</match>
 
-
-	<!-- Metric compatible families -->
-	<match target="pattern">
-		<edit name="search_metric_aliases" mode="assign"><bool>true</bool></edit>
-	</match>
-	<!-- TODO configure some metric aliases -->
-
-
-	<!-- Set default monospace font -->
-	<alias>
+	<!-- Default families -->
+	<alias binding="same">
+		<family>sans-serif</family>
+		<prefer>
+			<family>IBM Plex Sans</family>
+			<family>Noto Sans</family>
+		</prefer>
+	</alias>
+	<alias binding="same">
+		<family>serif</family>
+		<prefer>
+			<family>IBM Plex Serif</family>
+			<family>Noto Serif</family>
+		</prefer>
+	</alias>
+	<alias binding="same">
 		<family>monospace</family>
-		<prefer><family>IBM Plex Mono</family></prefer>
-	</alias>
-	<alias>
-		<family>IBM Plex Mono</family>
-		<default><family>monospace</family></default>
-	</alias>
-
-	<!-- Set default sans-serif font -->
-	<alias>
-	  <family>sans-serif</family>
-	  <prefer><family>Atkinson Hyperlegible</family></prefer>
-	</alias>
-	<alias>
-	  <family>Atkinson Hyperlegible</family>
-	  <default><family>sans-serif</family></default>
+		<prefer>
+			<family>IBM Plex Mono</family>
+			<family>Noto Sans Mono</family>
+		</prefer>
 	</alias>
 
+	<!-- Metric-compatible substitutes for common web/Office fonts -->
+	<alias binding="same">
+		<family>Arial</family>
+		<prefer>
+			<family>Liberation Sans</family>
+		</prefer>
+	</alias>
+	<alias binding="same">
+		<family>Helvetica</family>
+		<prefer>
+			<family>Liberation Sans</family>
+		</prefer>
+	</alias>
+	<alias binding="same">
+		<family>Times New Roman</family>
+		<prefer>
+			<family>Liberation Serif</family>
+		</prefer>
+	</alias>
+	<alias binding="same">
+		<family>Courier New</family>
+		<prefer>
+			<family>Liberation Mono</family>
+		</prefer>
+	</alias>
 
 </fontconfig>

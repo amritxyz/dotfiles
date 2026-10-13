@@ -8,6 +8,7 @@ unzip
 man-db
 man-pages
 yt-dlp
+bc
 tree
 dmidecode
 bash-completion

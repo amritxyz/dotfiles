@@ -1,5 +1,5 @@
-# Dot-files
-**Personal dot configs for my minimalist Wayland setup using [Dwl](https://codeberg.org/dwl/dwl) [fork of 'DWM'].**
+# Dotfiles
+**Personal dot configs for my minimalist Wayland setup using [Mango](https://github.com/mangowm/mango).**
 
 ---
 
@@ -16,7 +16,7 @@ sh ~/dotfiles/scripts/install.sh
 
 You can see the included packages *[here](https://codeberg.org/amrit/dotfiles/src/branch/main/packages)*.
 
-- Dynamic Wayland compositor: **DWL**
+- Dynamic Wayland compositor: **Mango**
 - Themed with **Adwaita**
 - Minimal configs for:
   - Waybar

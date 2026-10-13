@@ -20,7 +20,7 @@ open_nvim() {
 	setsid -f "$TERMINAL" -e nvim \
 		-c "$nvim_cmd" \
 		"$filepath" >/dev/null 2>&1
-	}
+}
 
 if [ "$1" = "--backup" ]; then
 	do_backup "$2"

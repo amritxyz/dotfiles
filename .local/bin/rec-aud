@@ -20,12 +20,12 @@ NEXT_NUMBER=$((MAX_NUMBER + 1))
 
 FILENAME="$TARGET_DIR/${NEXT_NUMBER}_aud.wav"
 # -ac 2 -ar 44100 -ab 192k
+	# -af "afftdn=nf=-75" \
 
 sleep 2  &&
 	notify-send -u normal "Recording audio only..." &&
 	ffmpeg -y \
 	-f alsa -i default \
-	-af "afftdn=nf=-75" \
 	-ac 2 -ar 44100 -sample_fmt s16 \
 	-strict -2 \
 	"$FILENAME"

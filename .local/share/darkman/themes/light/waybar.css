@@ -1,0 +1,23 @@
+@define-color bg-main #ffffff;
+@define-color bg-alt #f0f0f0;
+@define-color bg-active #c4d0ff;
+
+@define-color fg-main #000000;
+@define-color fg-dim #9f9f9f;
+
+@define-color sel-bg #c4d0ff;
+@define-color sel-fg #000000;
+
+@define-color border-main #9f9f9f;
+@define-color border-soft #c4c4c4;
+@define-color border-sel #4250ef;
+
+@define-color red #a60000;
+@define-color yellow #6f5500;
+@define-color yellow-soft #808000;
+@define-color green #006800;
+@define-color blue #0031a9;
+@define-color cyan #005e8b;
+@define-color magenta #721045;
+
+@define-color accent #4250ef;

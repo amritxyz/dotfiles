@@ -12,4 +12,4 @@ overlay_font = monospace:14
 <R> = reset
 <m> = flip horizontal
 <Shift+M> = flip vertical
-<y> = exec wl-copy < $imv_current_file
+<y> = exec wl-copy < "$imv_current_file"

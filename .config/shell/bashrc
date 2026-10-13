@@ -1,13 +1,11 @@
-# ~/.config/shell/bashrc
-
 # If not running interactively, don't do anything
 [[ $- != *i* ]] && return
 
 # Prompt configuration
-PS1="\n\[\e[38;5;66m\]\w\[\e[0m\] \
-\$(branch=\$(git symbolic-ref --short -q HEAD 2>/dev/null); [ -n \"\$branch\" ] && echo \"\[\e[38;5;167m\](\$branch)\[\e[0m\]\") \
-\[\e[38;5;108m\]\$(jobs -p | wc -l | awk '{if (\$1>0) print \"+\"\$1}')\n\
-\[\e[38;5;250m\]$\[\e[0m\] "
+PS1="\n\[\e[38;5;33m\]\w\[\e[0m\] \
+\$(branch=\$(git symbolic-ref --short -q HEAD 2>/dev/null); [ -n \"\$branch\" ] && echo \"\[\e[38;5;160m\](\$branch)\[\e[0m\]\") \
+\[\e[38;5;37m\]\$(jobs -p | wc -l | awk '{if (\$1>0) print \"+\"\$1}')\n\
+\[\e[38;5;250m\]\$\[\e[0m\] "
 
 # LS_COLORS configuration
 export LS_COLORS='di=38;5;240:fi=38;5;248:ln=38;5;109:ex=38;5;113:'
@@ -15,7 +13,7 @@ eval "$(dircolors -b)"
 
 # Fzf
 if [ -f "$HOME/.config/fzf/color" ]; then
-    FZF_DEFAULT_OPTS="$(cat ~/.config/fzf/color)"
+    export FZF_DEFAULT_OPTS="$(cat ~/.config/fzf/color)"
 fi
 
 # Shell options and settings
@@ -23,25 +21,31 @@ shopt -s autocd
 stty -ixon -ixoff
 export HISTSIZE=1000
 export HISTFILESIZE=2000
+export BAT_THEME="gruvbox-dark"
 
 # Aliases
+export PATH="$PATH:$HOME/.local/share/npm/bin/"
 alias grep='grep --color=auto'
 alias ls='ls -F --color=auto'
 alias l='ls -lF --color=auto'
 alias la='ls -AF --color=auto'
 alias ll='ls -lAF --color=auto'
+alias lf='~/.local/bin/lfub'
 alias c='clear'
 alias t='tmux'
 alias ta='tmux a'
 alias e='exit'
 alias torrent='qbittorrent'
-alias rr='cd $HOME/.local/src/dwl && ls -AF'
+alias rr='cd $HOME/.config/mango && ls -AF'
 alias h='cd $HOME/ && ls -AF'
 alias cf='cd $HOME/.config && ls -AF'
+alias wal='cd $HOME/.local/share/void-wall && ls -AF'
 alias mu='cd $HOME/.local/music && ls -AF'
 alias aud='cd $HOME/.local/audio && ls -AF'
 alias dl='cd $HOME/.local/dl && ls -AF'
 alias dox='cd $HOME/.local/dox && ls -AF'
+alias dev='cd $HOME/.local/dev && ls -AF'
+alias pra='cd $HOME/.local/practice && ls -AF'
 alias vid='cd $HOME/.local/vids && ls -AF'
 alias img='cd $HOME/.local/img && ls -AF'
 alias sss='cd $HOME/.local/img/ss && ls -AF'
@@ -54,15 +58,21 @@ alias ff='fastfetch'
 alias pc='sudo pacman -Sc'
 alias ..='cd .. && ls -AF'
 alias ...='cd ../../ && ls -AF'
-alias yta-aac='yt-dlp --extract-audio --audio-format aac'
-alias yta-best='yt-dlp --extract-audio --audio-format best'
-alias yta-flac='yt-dlp --extract-audio --audio-format flac'
-alias yta-mp3='yt-dlp --extract-audio --audio-format mp3'
-alias ytv-best='yt-dlp -f "bestvideo[ext=mp4]+bestaudio[ext=m4a]/bestvideo+bestaudio" --merge-output-format mp4'
+alias yta='yt-dlp --cookies-from-browser firefox -x'
+alias yta-best='yt-dlp --cookies-from-browser firefox -x'
+alias yta-mp3='yt-dlp --cookies-from-browser firefox -x --audio-format mp3'
+alias yta-aac='yt-dlp --cookies-from-browser firefox -x --audio-format aac'
+alias yta-flac='yt-dlp --cookies-from-browser firefox -x --audio-format flac'
+alias yta-m4a='yt-dlp --cookies-from-browser firefox -x --audio-format m4a'
+alias yta-opus='yt-dlp --cookies-from-browser firefox -x --audio-format opus'
+alias ytv='yt-dlp --cookies-from-browser firefox'
+alias ytv-best='yt-dlp --cookies-from-browser firefox -f "bestvideo[ext=mp4]+bestaudio[ext=m4a]/bestvideo+bestaudio" --merge-output-format mp4'
+alias ytv-mp4='yt-dlp --cookies-from-browser firefox --merge-output-format mp4'
 alias v='nvim'
 alias vi='nvim'
 alias vim='nvim'
 alias mkdir='mkdir -p'
+alias zzz='systemctl suspend'
 alias jx='_JAVA_AWT_WM_NONREPARENTING=1 java'
 alias jsql='java -cp .:/opt/mysql-connector-j-9.3.0/mysql-connector-j-9.3.0.jar'
 alias jsqlc='javac -cp .:/opt/mysql-connector-j-9.3.0/mysql-connector-j-9.3.0.jar'
@@ -95,3 +105,7 @@ alias gt='git ls-tree -r main --name-only'
 alias gb='git branch'
 alias gf='git fetch'
 alias glg='git log --graph --abbrev-commit --decorate --format=format:"%C(bold green)%h%C(reset) - %C(bold cyan)%aD%C(reset) %C(bold yellow)(%ar)%C(reset)%C(auto)%d%C(reset)%n%  C(white)%s%C(reset) %C(dim white)- %an%C(reset)" --all'
+
+if [ -f ~/.config/shell/aliasrc ]; then
+	. ~/.config/shell/aliasrc
+fi

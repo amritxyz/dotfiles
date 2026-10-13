@@ -1,0 +1,170 @@
+@import "color.css";
+
+/* global reset */
+* {
+	border: none;
+	border-radius: 0;
+	min-height: 0;
+	font-family: "monospace", "cozette";
+	font-weight: 600;
+	font-size: 14px;
+	padding: 0;
+	margin: 0;
+}
+
+/* main window styling */
+window#waybar {
+	background-color: @sel-bg;
+	color: @fg-main;
+}
+
+/* tooltip styling */
+tooltip {
+	background-color: @bg-alt;
+	color: @fg-main;
+	padding: 4px;
+}
+
+/* workspaces / tags module */
+#workspaces {
+	padding: 0;
+	margin: 0;
+}
+
+#workspaces button {
+	all: unset;
+	min-width: 0;
+	padding: 0 8px;
+	margin: 0;
+	color: @fg-main;
+	background-color: @bg-main;
+}
+
+#workspaces button label {
+	color: @fg-main;
+}
+
+#workspaces button.active {
+	color: @sel-fg;
+	background-color: @sel-bg;
+}
+
+#workspaces button.active label {
+	color: @sel-fg;
+}
+
+#workspaces button.urgent {
+	background-color: @red;
+	color: @bg-main;
+}
+
+#workspaces button.urgent label {
+	color: @bg-main;
+}
+
+#workspaces button.empty {
+	color: @fg-dim;
+}
+
+#workspaces button.empty label {
+	color: @fg-dim;
+}
+
+#workspaces button:hover {
+	background-color: @bg-alt;
+	color: @fg-main;
+}
+
+#workspaces button.active:hover {
+	background-color: @sel-bg;
+	color: @sel-fg;
+}
+
+/* layout module */
+#layout {
+	padding: 0 8px;
+	margin: 0;
+	color: @fg-main;
+	background-color: @bg-main;
+}
+
+#layout:hover {
+	background-color: @bg-alt;
+}
+
+/* window title module */
+#window {
+	padding: 0 8px;
+	margin: 0;
+	color: @sel-fg;
+	background-color: @sel-bg;
+}
+
+#window label {
+	color: @sel-fg;
+}
+
+window#waybar.empty #window,
+#window.empty {
+	background-color: transparent;
+}
+
+/* tray module */
+#tray {
+	padding: 0 6px;
+	margin: 0;
+}
+
+/* modules: cpu, temperature, memory, battery, network, pulseaudio, clock */
+#temperature,
+#cpu,
+#memory,
+#network,
+#pulseaudio,
+#battery,
+#clock {
+	padding: 0 8px;
+	margin: 0;
+	color: @fg-main;
+	background-color: @bg-main;
+}
+
+/* critical / warning states */
+#cpu.critical,
+#memory.critical,
+#battery.critical,
+#battery.urgent {
+	color: @red;
+}
+
+#battery.warning {
+	color: @yellow-soft;
+}
+
+#battery.charging {
+	color: @fg-main;
+}
+
+/* network module */
+#network.connected {
+	color: @green;
+}
+
+#network.disconnected {
+	color: @fg-dim;
+}
+
+/* pulseaudio module */
+#pulseaudio {
+	color: @fg-main;
+}
+
+#pulseaudio.muted {
+	color: @fg-dim;
+}
+
+#custom-separator {
+    padding: 0 2px;
+    color: @fg-dim;
+    background-color: @bg-main;
+}

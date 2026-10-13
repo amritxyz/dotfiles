@@ -1,0 +1,19 @@
+@define-color bg-main #000000;
+@define-color bg-alt #303536;
+@define-color bg-active #535353;
+
+@define-color fg-main #ffffff;
+@define-color fg-dim #989898;
+
+@define-color border-main #646464;
+@define-color border-soft #434a4c;
+
+@define-color red #ff5f59;
+@define-color yellow #d0bc00;
+@define-color yellow-soft #d8a657;
+@define-color green #44bc44;
+@define-color blue #2fafff;
+@define-color cyan #00d3d0;
+@define-color magenta #feacd0;
+
+@define-color accent #f3d000;

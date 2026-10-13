@@ -1,6 +1,7 @@
 git-lfs
+git-filter-repo
 zls
-rust
+rustup
 go
 jdk-openjdk
 nodejs
@@ -12,3 +13,6 @@ deno
 typescript
 svelte-language-server
 wabt
+wasmtime
+wasi-libc
+wasi-compiler-rt

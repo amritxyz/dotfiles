@@ -1,12 +1,12 @@
-for portal in xdg-desktop-portal-gtk xdg-desktop-portal-wlr xdg-desktop-portal; do
-   pkill -e "$portal"
-done
-
-# Start xdg-desktop-portal-wlr and xdg-desktop-portal-gtk
-/usr/libexec/xdg-desktop-portal-wlr &
-/usr/libexec/xdg-desktop-portal-gtk &
-
-sleep 1
-
-# Start main xdg-desktop-portal
-/usr/libexec/xdg-desktop-portal &
+# for portal in xdg-desktop-portal-gtk xdg-desktop-portal-wlr xdg-desktop-portal; do
+#    pkill -e "$portal"
+# done
+#
+# # Start xdg-desktop-portal-wlr and xdg-desktop-portal-gtk
+# /usr/libexec/xdg-desktop-portal-wlr &
+# /usr/libexec/xdg-desktop-portal-gtk &
+#
+# sleep 1
+#
+# # Start main xdg-desktop-portal
+# /usr/libexec/xdg-desktop-portal &

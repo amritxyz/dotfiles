@@ -1,11 +1,15 @@
 #!/bin/sh
 
-i=000
-while [ -d "${i}-project" ]; do
-	i=$(printf "%03d" $(($i + 1)))
-done
+if [ $# -gt 0 ]; then
+	n="$1"
+else
+	i=000
+	while [ -d "${i}-project" ]; do
+		i=$(printf "%03d" $((10#$i + 1)))
+	done
+	n="${i}-project"
+fi
 
-n="${i}-project"
 s="$n/src"
 
 mkdir -p "$s"
@@ -16,7 +20,7 @@ cat > "$s/main.c" << 'EOF'
 
 #include "main.h"
 
-int main(int argc, char **argv)
+int main(void)
 {
 	return 0;
 }
@@ -28,20 +32,20 @@ cat > "$s/main.h" << 'EOF'
 
 #include <stdint.h>
 
-typedef uint8_t u8;
+typedef uint8_t  u8;
 typedef uint16_t u16;
 typedef uint32_t u32;
 typedef uint64_t u64;
 
-typedef int8_t i8;
-typedef int16_t i16;
-typedef int32_t i32;
-typedef int64_t i64;
+typedef int8_t   i8;
+typedef int16_t  i16;
+typedef int32_t  i32;
+typedef int64_t  i64;
 
-typedef i8 b8;
+typedef i8  b8;
 typedef i32 b32;
 
-typedef float f32;
+typedef float  f32;
 typedef double f64;
 
 #endif
@@ -49,8 +53,9 @@ EOF
 
 cat > "$n/Makefile" << 'EOF'
 CC      = cc
-CFLAGS  = -Wall -Werror -Wextra -std=c99 -Isrc
+CFLAGS  = -Wall -Wextra -Werror -std=c99 -Isrc
 # LDFLAGS = -lm
+
 SRC     = src/main.c
 OBJ     = build/main.o
 OUT     = bin/main
@@ -78,10 +83,10 @@ EOF
 
 cat > "$n/.gitignore" << 'EOF'
 *.o
-*.out
 *.obj
+*.out
 build/
 bin/
 EOF
 
-echo "Project $n created."
+echo "Project '$n' ready."

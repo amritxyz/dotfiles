@@ -1,5 +1,2 @@
-lib32-gcc-libs
-lib32-glibc
-libxcrypt-compat
 net-tools
 inetutils

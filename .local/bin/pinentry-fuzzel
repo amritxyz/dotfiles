@@ -1,0 +1,33 @@
+#!/bin/bash
+# pinentry using fuzzel (based on pinentry-dmenu)
+# Protocol: https://gorbe.io/posts/gnupg/pinentry/documentation/
+
+export XDG_RUNTIME_DIR="${XDG_RUNTIME_DIR:-/run/user/$(id -u)}"
+if [ -z "$WAYLAND_DISPLAY" ]; then
+    # fall back to the first wayland socket found
+    sock=$(ls "$XDG_RUNTIME_DIR"/wayland-* 2>/dev/null | grep -v '\.lock$' | head -n1)
+    export WAYLAND_DISPLAY="${sock##*/}"
+fi
+
+echo 'OK Pleased to meet you'
+KEYNAME=""
+while IFS= read -r line; do
+    case $line in
+        BYE*) echo OK; break ;;
+        SETDESC*)
+            KEYNAME=${line#*:%0A%22}
+            KEYNAME=${KEYNAME%\%22\%0A*}
+            echo OK ;;
+        GETPIN*)
+            PASS_INPUT=$(fuzzel --dmenu --password --prompt-only "GPG ${KEYNAME}: ")
+            if [ $? -ne 0 ] || [ -z "$PASS_INPUT" ]; then
+                echo "ERR 83886179 Operation cancelled"
+            else
+                PASS_INPUT=${PASS_INPUT//%/%25}   # protocol escaping
+                echo "D ${PASS_INPUT}"
+                echo "OK"
+            fi
+            unset PASS_INPUT ;;
+        *) echo OK ;;
+    esac
+done

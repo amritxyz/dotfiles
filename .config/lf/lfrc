@@ -1,34 +1,33 @@
-# Basic Settings
 set hidden true
 set ignorecase true
 set icons true
 set scrolloff 10
 set autoquit true
-
-# Custom Functions
-cmd mkdir ${{
-	printf "Directory Name: "
-		read ans
-		mkdir $ans
+set shellopts '-eu'
+set ifs "\n"
+set previewer '~/.config/lf/scope'
+cmd on-select &{{
+    lf -remote "send $id redraw"
 }}
 
-cmd mkfile ${{
-	printf "File Name: "
-		read ans
-		nvim $ans
-}}
+cmd mkdir $mkdir -p "$@"
+cmd mkfile $touch "$@" && $EDITOR "$@"
 
 cmd open &{{
 	case $(file --mime-type -Lb $f) in
 		text/*|application/json|application/javascript|inode/*|application/*-ini) lf -remote "send $id \$nvim \$fx";;
-		image/*) imv -W 1100 -H 575 "$f";;
-		audio/*|video/*|application/ogg) mpv --geometry=50% --force-window "$f";;
+		image/xml) display -- $f ;;
+		image/svg|image/*) imv "$f";;
+		image/vnd.djvu|application/pdf|application/postscript) zathura $fx >/dev/null 2>&1 ;;
+		text/*|application/json|inode/x-empty|application/x-subrip) $EDITOR $fx;;
+		image/x-xcf) setsid -f gimp $f >/dev/null 2>&1 ;;
+		audio/*|video/*|application/ogg) mpv --force-window "$f";;
+		application/pgp-encrypted) $EDITOR $fx ;;
 		application/pdf|image/vnd.djvu|application/x-cbr|application/x-cbz|application/x-comic|application/x-comic+zip) zathura "$f";;
 		application/vnd.oasis.opendocument.*|application/vnd.ms-office|application/vnd.openxmlformats-officedocument.*|application/vnd.sun.xml.*) libreoffice "$f";;
 		*) xdg-open "$f"
 	esac
 }}
-
 cmd extract ${{
 	clear; tput cup $(($(tput lines)/3)); tput bold
 	set -f
@@ -37,32 +36,77 @@ cmd extract ${{
 	read ans
 	[ $ans = "y" ] && {
 		case $fx in
-			*.tar.bz2)   tar xjf $fx     ;;
-			*.tar.gz)    tar xzf $fx     ;;
-			*.bz2)       bunzip2 $fx     ;;
-			*.rar)       unrar e $fx     ;;
-			*.gz)        gunzip $fx      ;;
-			*.tar)       tar xf $fx      ;;
-			*.tbz2)      tar xjf $fx     ;;
-			*.tgz)       tar xzf $fx     ;;
-			*.zip)       unzip $fx       ;;
-			*.Z)         uncompress $fx  ;;
-			*.7z)        7z x $fx        ;;
-			*.tar.xz)    tar xf $fx      ;;
+			*.tar.bz2)	tar xjf $fx	;;
+			*.tar.gz)	tar xzf $fx	;;
+			*.bz2)		bunzip2 $fx	;;
+			*.rar)		unrar e $fx	;;
+			*.gz)		gunzip $fx	;;
+			*.tar)		tar xf $fx	;;
+			*.tbz2)		tar xjf $fx	;;
+			*.tgz)		tar xzf $fx	;;
+			*.zip)		unzip $fx	;;
+			*.Z)		uncompress $fx	;;
+			*.7z)		7z x $fx	;;
+			*.tar.xz)	tar xf $fx	;;
 		esac
 	}
 }}
-
-cmd setwall ${{
-	case "$f" in
-		*.jpg|*.png)
-			sed -i "s|^bgloc=.*|bgloc=\"$f\"|" "$HOME/.local/bin/setbgw"
-			"$HOME/.local/bin/setbgw"
-			;;
-		*)
-			printf "Not an image file\n"
-			;;
-	esac
+cmd delete ${{
+	clear; tput cup $(($(tput lines)/3)); tput bold
+	set -f
+	printf "%s\n\t" "$fx"
+	printf "delete?[y/N] "
+	read ans
+	[ $ans = "y" ] && rm -rf -- $fx
+}}
+cmd moveto ${{
+	set -f
+	clear; tput cup $(($(tput lines)/3))
+	dest=$(sed -e 's/\s*#.*//' -e '/^$/d' "${XDG_CONFIG_HOME:-$HOME/.config}/shell/bm-dirs" | while read -r line; do eval echo "$line"; done | fzf --layout=reverse --height 40% --prompt 'Move to where? ')
+	[ -z "$dest" ] && exit
+	destpath=$(eval printf '%s' \"$dest\")
+	clear; tput cup $(($(tput lines)/3)); tput bold
+	echo "From:"
+	echo "$fx" | sed 's/^/   /'
+	printf "To:\n   %s\n\n\tmove?[y/N]" "$destpath"
+	read -r ans
+	[ "$ans" != "y" ] && exit
+	for x in $fx; do
+		mv -iv "$x" "$destpath"
+	done &&
+	notify-send "File(s) moved." "File(s) moved to $destpath."
+}}
+cmd copyto ${{
+	set -f
+	clear; tput cup $(($(tput lines)/3))
+	dest=$(sed -e 's/\s*#.*//' -e '/^$/d' "${XDG_CONFIG_HOME:-$HOME/.config}/shell/bm-dirs" | while read -r line; do eval echo "$line"; done | fzf --layout=reverse --height 40% --prompt 'Copy to where? ')
+	[ -z "$dest" ] && exit
+	destpath=$(eval printf '%s' \"$dest\")
+	clear; tput cup $(($(tput lines)/3)); tput bold
+	echo "From:"
+	echo "$fx" | sed 's/^/   /'
+	printf "To:\n   %s\n\n\tcopy?[y/N]" "$destpath"
+	read -r ans
+	[ "$ans" != "y" ] && exit
+	for x in $fx; do
+		cp -ivr "$x" "$destpath"
+	done &&
+	notify-send "File(s) copied." "File(s) copied to $destpath."
+}}
+cmd bulkrename ${{
+	tmpfile_old="$(mktemp)"
+	tmpfile_new="$(mktemp)"
+	[ -n "$fs" ] && fs=$(basename -a $fs) || fs=$(ls)
+	echo "$fs" > "$tmpfile_old"
+	echo "$fs" > "$tmpfile_new"
+	$EDITOR "$tmpfile_new"
+	[ "$(wc -l < "$tmpfile_old")" -eq "$(wc -l < "$tmpfile_new")" ] || { rm -f "$tmpfile_old" "$tmpfile_new"; exit 1; }
+	paste "$tmpfile_old" "$tmpfile_new" | while IFS="$(printf '\t')" read -r src dst
+	do
+		[ "$src" = "$dst" ] || [ -e "$dst" ] || mv -- "$src" "$dst"
+	done
+	rm -f "$tmpfile_old" "$tmpfile_new"
+	lf -remote "send $id unselect"
 }}
 
 # Bindings
@@ -70,29 +114,42 @@ map c
 map d
 map m
 
-map zi extract
-map a setwall
-
-# Basic Functions
-map . set hidden!
 map dd delete
 map du %du -sh "$f"
-
-# Backup
 map bak %bak "$f"
-
-map o $mpv --force-window "$f"
 map p paste
 map x cut
+# map x $$f
+map X !$f
 map y copy
 map <enter> open
-map R reload
-map mf mkfile
-map md mkdir
+map o $mpv --force-window "$f"
 map me $chmod +x "$f"
 map <esc> clear
 
-# Movement
+map C copyto
+map M moveto
+map R bulkrename
+map zi extract
+map <c-n> push :mkdir<space>""<left>
+
+map . set hidden!
+map <c-r> reload
+map <c-s> set hidden!
+
+map mf push :mkfile<space>""<left>
+map md push :mkdir<space>""<left>
+
+map a $sh -c 'pkill swaybg; nohup swaybg -i "$1" >/dev/null 2>&1 &' sh "$f"
+
+map W $setsid -f $TERMINAL >/dev/null 2>&1
+map U $printf "%s" "$fx" | xclip -selection clipboard
+map u $printf "%s" "$fx" | sed 's/.*\///' | xclip -selection clipboard
+map T $nsxiv -t "$(pwd)"
+map <c-l> unselect
+map <c-f> $lf -remote "send $id select \"$(fzf)\""
+map V push :!nvim<space>
+
 map gc cd ~/.config
 map gb cd ~/.local/bin
 map gn cd ~/.local/dox/notes
@@ -104,8 +161,10 @@ map ga cd ~/.local/audio
 map gv cd ~/.local/vids
 map gs cd ~/.local/share
 map gr cd ~/.local/git-repos
-map gw cd ~/.local/share/arch-wall
+map gw cd ~/.local/share/void-wall
 map gp cd ~/.local/practice
 map gl cd ~/.local/dl
 map gx cd ~/.local/dox
 map gt cd /opt/void/
+map H cd ~
+map gg top

@@ -36,7 +36,7 @@ gsettings set org.gnome.desktop.interface color-scheme "$COLOR_SCHEME"
 gsettings set org.gnome.desktop.interface gtk-theme "$GTK_NAME"
 gsettings set org.gnome.desktop.interface cursor-theme 'Adwaita'
 gsettings set org.gnome.desktop.interface cursor-size 16
-gsettings set org.gnome.desktop.interface font-name 'sans 12'
+gsettings set org.gnome.desktop.interface font-name 'sans 14'
 gsettings set org.gnome.desktop.interface monospace-font-name 'mono 9'
 gsettings set org.gnome.desktop.wm.preferences button-layout 'none'
 gsettings set org.gnome.desktop.wm.preferences action-double-click-titlebar 'none'

@@ -131,16 +131,23 @@
 	"battery": {
 		"format": "bat {capacity}%",
 		"format-charging": "chr {capacity}%",
-		"interval": 5,
 		"states": {
-			"warning": 20,
-			"critical": 10
+			"warning": 50,
+			"critical": 30
+		},
+		"events": {
+			"on-discharging-warning": "notify-send -u critical 'Low Battery'",
+			"on-discharging-critical": "notify-send -u critical 'Very Low Battery'",
+			"on-charging-80": "notify-send -u normal 'Battery Full!'",
+			"on-discharging": "notify-send -u normal 'Power Switch' Discharging",
+			"on-charging": "notify-send -u normal 'Power Switch' Charging'"
 		},
 		"tooltip": false
 	},
 
 	"clock": {
-		"format": "{:%Y %b %d, %a %I:%M %p}",
+		"format": "{:%Y %b %d, %a %I:%M:%S %p}",
+		"interval": 5,
 		"tooltip": false
 	},
 

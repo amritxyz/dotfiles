@@ -2,9 +2,12 @@
 [[ $- != *i* ]] && return
 
 # Prompt configuration
-PS1="\n\[\e[38;5;33m\]\w\[\e[0m\] \
-\$(branch=\$(git symbolic-ref --short -q HEAD 2>/dev/null); [ -n \"\$branch\" ] && echo \"\[\e[38;5;160m\](\$branch)\[\e[0m\]\") \
-\[\e[38;5;37m\]\$(jobs -p | wc -l | awk '{if (\$1>0) print \"+\"\$1}')\n\
+PROMPT_COMMAND='ec=$?'${PROMPT_COMMAND:+;$PROMPT_COMMAND}
+PS1="\n\[\e[38;5;33m\]\w\[\e[0m\]\
+\$(branch=\$(git symbolic-ref --short -q HEAD 2>/dev/null); [ -n \"\$branch\" ] && echo \" \[\e[38;5;160m\](\$branch)\[\e[0m\]\")\
+\[\e[38;5;37m\]\$(jobs -p | wc -l | awk '{if (\$1>0) print \" +\"\$1}')\
+\[\e[38;5;244m\] [nyx]\[\e[0m\]\
+\$([ \"\$ec\" -ne 0 ] && echo \" \[\e[38;5;160m\][\$ec]\[\e[0m\]\")\n\
 \[\e[38;5;250m\]\$\[\e[0m\] "
 
 # LS_COLORS configuration
@@ -30,7 +33,7 @@ alias ls='ls -F --color=auto'
 alias l='ls -lF --color=auto'
 alias la='ls -AF --color=auto'
 alias ll='ls -lAF --color=auto'
-alias lf='~/.local/bin/lfub'
+# alias lf='~/.local/bin/lfub'
 alias c='clear'
 alias t='tmux'
 alias ta='tmux a'

@@ -2,13 +2,25 @@
 [[ $- != *i* ]] && return
 
 # Prompt configuration
-PROMPT_COMMAND='ec=$?'${PROMPT_COMMAND:+;$PROMPT_COMMAND}
-PS1="\n\[\e[38;5;33m\]\w\[\e[0m\]\
-\$(branch=\$(git symbolic-ref --short -q HEAD 2>/dev/null); [ -n \"\$branch\" ] && echo \" \[\e[38;5;160m\](\$branch)\[\e[0m\]\")\
-\[\e[38;5;37m\]\$(jobs -p | wc -l | awk '{if (\$1>0) print \" +\"\$1}')\
-\[\e[38;5;244m\] [nyx]\[\e[0m\]\
-\$([ \"\$ec\" -ne 0 ] && echo \" \[\e[38;5;160m\][\$ec]\[\e[0m\]\")\n\
-\[\e[38;5;250m\]\$\[\e[0m\] "
+export VIRTUAL_ENV_DISABLE_PROMPT=1
+
+__prompt() {
+    local ec=$?
+    local b jp n
+    b=$(git symbolic-ref --short -q HEAD 2>/dev/null)
+    jp=$(jobs -p)
+
+    PS1='\n\[\e[38;5;33m\]\w\[\e[0m\]'
+    [ -n "$b" ] && PS1+=" \[\e[38;5;34m\](${b//\$/\\\$})\[\e[0m\]"
+    [ "$ec" -ne 0 ] && PS1+=" \[\e[38;5;160m\][$ec]\[\e[0m\]"
+    [ -n "$VIRTUAL_ENV" ] && PS1+=" \[\e[38;5;37m\](${VIRTUAL_ENV##*/})\[\e[0m\]"
+    if [ -n "$jp" ]; then
+        n=${jp//[^$'\n']/}
+        PS1+=" \[\e[38;5;178m\]&$(( ${#n} + 1 ))\[\e[0m\]"
+    fi
+    PS1+='\n\[\e[38;5;250m\]\$\[\e[0m\] '
+}
+PROMPT_COMMAND=__prompt
 
 # LS_COLORS configuration
 export LS_COLORS='di=38;5;240:fi=38;5;248:ln=38;5;109:ex=38;5;113:'

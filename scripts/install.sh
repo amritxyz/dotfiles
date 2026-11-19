@@ -50,6 +50,9 @@ echo
 bash "$SCRIPT_DIR/cursor.sh"
 
 echo
+bash "$SCRIPT_DIR/mango-git.sh"
+
+echo
 bash "$SCRIPT_DIR/power-saving.sh"
 
 echo

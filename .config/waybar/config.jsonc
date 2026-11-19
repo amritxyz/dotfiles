@@ -75,6 +75,7 @@
 	},
 
 	"tray": {
+		"icon-size": 14,
 		"spacing": 6,
 		"tooltip": false
 	},
@@ -95,13 +96,19 @@
 		},
 		"tooltip": false
 	},
+	"cpu": {
+		"format": "cpu {usage}%",
+		"interval": 2,
+		"states": { "critical": 90 },
+		"on-click-right": "notify-send 'CPU hogs' \"$(ps axch -o cmd:15,%cpu --sort=-%cpu | head)\"",
+		"tooltip": false
+	},
 
 	"memory": {
 		"format": "mem {percentage}%",
 		"interval": 2,
-		"states": {
-			"critical": 80
-		},
+		"states": { "critical": 80 },
+		"on-click-right": "notify-send 'Memory hogs' \"$(ps axch -o cmd:15,%mem --sort=-%mem | head)\"",
 		"tooltip": false
 	},
 
@@ -110,31 +117,29 @@
 		"format-ethernet": "enth {bandwidthDownBits}",
 		"format-disconnected": "no network",
 		"interval": 5,
+		"on-click": "notify-send 'Network' \"$(printf 'wifi: wifi connected\\neth: ethernet working\\nno network: disconnected')\"",
+		"on-click-middle": "pkill -x nmtui || setsid -f foot -a float_win -e nmtui",
+		"on-click-right": "pkill -x bmon || setsid -f foot -c ~/.config/foot/bmon.ini -a float_win -e bmon",
 		"tooltip": false
 	},
 
 	"pulseaudio": {
-		"scroll-step": 5,
+		"scroll-step": 2,
 		"max-volume": 150,
 		"format": "{icon} {volume}%",
 		"format-bluetooth": "bt {volume}%",
 		"format-muted": "mute {volume}%",
-		"format-icons": {
-			"default": "vol",
-			"headphone": "hp",
-			"headset": "hp"
-		},
-		"nospacing": 1,
+		"format-icons": { "default": "vol", "headphone": "hp", "headset": "hp" },
+		"on-click-middle": "wpctl set-mute @DEFAULT_SINK@ toggle",
+		"on-click-right": "notify-send 'Volume' \"$(printf 'Scroll up: increase\\nScroll down: decrease\\nMiddle-click: toggle mute')\"",
 		"tooltip": false
 	},
 
 	"battery": {
 		"format": "bat {capacity}%",
 		"format-charging": "chr {capacity}%",
-		"states": {
-			"warning": 50,
-			"critical": 30
-		},
+		"states": { "warning": 50, "critical": 30 },
+		"on-click-right": "notify-send 'Battery' \"$(printf 'bat: discharging\\nchr: charging')\"",
 		"events": {
 			"on-discharging-warning": "notify-send -u critical 'Low Battery'",
 			"on-discharging-critical": "notify-send -u critical 'Very Low Battery'",
@@ -147,8 +152,14 @@
 
 	"clock": {
 		"format": "{:%Y %b %d, %a %I:%M:%S %p}",
-		"interval": 5,
-		"tooltip": false
+		"tooltip": false,
+		"interval": 1,
+		"on-click": "pkill -x calcurse || setsid -f foot -a float_win -e calcurse",
+		"on-click-middle": "notify-send 'This Month' \"$(cal)\"",
+		"on-click-right": "notify-send 'Appointments' \"$(calcurse -d3 2>/dev/null)\"",
+		"calendar": {
+			"mode": "month"
+		}
 	},
 
 	"custom/separator": {

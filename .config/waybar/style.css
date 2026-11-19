@@ -5,7 +5,7 @@
 	border: none;
 	border-radius: 0;
 	min-height: 0;
-	font-family: "monospace", "cozette";
+	font-family: monospace;
 	font-weight: 500;
 	font-size: 14px;
 	padding: 0;
@@ -16,6 +16,7 @@
 window#waybar {
 	background-color: @sel-bg;
 	color: @fg-main;
+	min-height: 20px;
 }
 
 /* tooltip styling */
@@ -33,8 +34,8 @@ tooltip {
 
 #workspaces button {
 	all: unset;
-	min-width: 0;
-	padding: 0 8px;
+	min-width: 24px;
+	padding: 0;
 	margin: 0;
 	color: @fg-main;
 	background-color: @bg-main;
@@ -164,7 +165,26 @@ window#waybar.empty #window,
 }
 
 #custom-separator {
-    padding: 0 2px;
+    padding: 0 1px;
     color: @fg-dim;
     background-color: @bg-main;
+}
+
+#workspaces button,
+#layout,
+#window,
+#tray,
+#temperature,
+#cpu,
+#memory,
+#network,
+#pulseaudio,
+#battery,
+#clock,
+#custom-separator {
+	min-height: 20px;
+	padding-top: 0;
+	padding-bottom: 0;
+	margin-top: 0;
+	margin-bottom: 0;
 }

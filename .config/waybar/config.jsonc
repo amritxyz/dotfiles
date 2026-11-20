@@ -124,7 +124,7 @@
 	},
 
 	"pulseaudio": {
-		"scroll-step": 2,
+		"scroll-step": 5,
 		"max-volume": 150,
 		"format": "{icon} {volume}%",
 		"format-bluetooth": "bt {volume}%",

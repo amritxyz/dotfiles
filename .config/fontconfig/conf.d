@@ -21,37 +21,33 @@
 
 	<!-- Metric-compatible families -->
 
-	<!-- Arial / Helvetica -> Liberation Sans, Arimo -->
+	<!-- Arial / Helvetica -> Liberation Sans -->
 	<alias binding="same">
 		<family>Arial</family>
 		<prefer>
 			<family>Liberation Sans</family>
-			<family>Arimo</family>
 		</prefer>
 	</alias>
 	<alias binding="same">
 		<family>Helvetica</family>
 		<prefer>
 			<family>Liberation Sans</family>
-			<family>Arimo</family>
 		</prefer>
 	</alias>
 
-	<!-- Times New Roman -> Liberation Serif, Tinos -->
+	<!-- Times New Roman -> Liberation Serif -->
 	<alias binding="same">
 		<family>Times New Roman</family>
 		<prefer>
 			<family>Liberation Serif</family>
-			<family>Tinos</family>
 		</prefer>
 	</alias>
 
-	<!-- Courier New -> Liberation Mono, Cousine -->
+	<!-- Courier New -> Liberation Mono -->
 	<alias binding="same">
 		<family>Courier New</family>
 		<prefer>
 			<family>Liberation Mono</family>
-			<family>Cousine</family>
 		</prefer>
 	</alias>
 
@@ -88,7 +84,7 @@
 	<alias>
 		<family>sans-serif</family>
 		<prefer>
-			<family>IBM Plex Sans</family>
+			<family>Atkinson Hyperlegible</family>
 			<family>Noto Color Emoji</family>
 		</prefer>
 	</alias>

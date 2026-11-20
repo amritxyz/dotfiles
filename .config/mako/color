@@ -1,6 +1,9 @@
 background-color=#ffffff
 text-color=#000000
 border-color=#9f9f9f
+border-size=2
+border-radius=4
+padding=8
 
 [urgency=low]
 background-color=#f2f2f2

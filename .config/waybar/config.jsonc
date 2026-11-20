@@ -153,10 +153,10 @@
 	"clock": {
 		"format": "{:%Y %b %d, %a %I:%M:%S %p}",
 		"tooltip": false,
-		"interval": 1,
+		"interval": 5,
 		"on-click": "pkill -x calcurse || setsid -f foot -a float_win -e calcurse",
 		"on-click-middle": "notify-send 'This Month' \"$(cal)\"",
-		"on-click-right": "notify-send 'Appointments' \"$(calcurse -d3 2>/dev/null)\"",
+		"on-click-right": "notify-send -c calendar 'Appointments' \"$(calcurse -d3 2>/dev/null | sed '/^$/d')\"",
 		"calendar": {
 			"mode": "month"
 		}

@@ -145,7 +145,7 @@
 			"on-discharging-critical": "notify-send -u critical 'Very Low Battery'",
 			"on-charging-80": "notify-send -u normal 'Battery Full!'",
 			"on-discharging": "notify-send -u normal 'Power Switch' Discharging",
-			"on-charging": "notify-send -u normal 'Power Switch' Charging'"
+			"on-charging": "notify-send -u normal 'Power Switch' Charging"
 		},
 		"tooltip": false
 	},

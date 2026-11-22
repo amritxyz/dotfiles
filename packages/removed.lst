@@ -8,13 +8,11 @@ transmission-gtk
 gimp
 htop
 inkscape
-inter-font
 ttf-hack
 ttf-fantasque-sans-mono
 ttf-atkinson-hyperlegible
 bat
-ttf-hack
-noto-fonts
-inter-font
+ttf-ibm-plex
 otf-libertinus
+ttf-atkinson-hyperlegible
 ttf-nerd-fonts-symbols

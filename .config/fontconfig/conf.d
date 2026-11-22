@@ -65,11 +65,11 @@
 		</prefer>
 	</alias>
 
-	<!-- Georgia -> IBM Plex Serif (no official-repo) -->
+	<!-- Georgia -> Noto Serif (no official-repo) -->
 	<alias binding="same">
 		<family>Georgia</family>
 		<prefer>
-			<family>IBM Plex Serif</family>
+			<family>Noto Serif</family>
 		</prefer>
 	</alias>
 
@@ -77,21 +77,22 @@
 	<alias>
 		<family>monospace</family>
 		<prefer>
-			<family>IBM Plex Mono</family>
+			<family>Hack</family>
 			<family>Noto Color Emoji</family>
 		</prefer>
 	</alias>
 	<alias>
 		<family>sans-serif</family>
 		<prefer>
-			<family>Atkinson Hyperlegible</family>
+			<family>Inter</family>
+			<family>Noto Sans</family>
 			<family>Noto Color Emoji</family>
 		</prefer>
 	</alias>
 	<alias>
 		<family>serif</family>
 		<prefer>
-			<family>IBM Plex Serif</family>
+			<family>Noto Serif</family>
 			<family>Noto Color Emoji</family>
 		</prefer>
 	</alias>

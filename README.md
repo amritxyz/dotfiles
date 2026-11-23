@@ -16,14 +16,14 @@ sh ~/dotfiles/scripts/install.sh
 
 You can see the included packages *[here](https://codeberg.org/amrit/dotfiles/src/branch/main/packages)*.
 
-- Dynamic Wayland compositor: **Mango**
-- Themed with **Adwaita**
+- Dynamic Wayland compositor: [**Mango**](https://mangowm.github.io)
+- Themed with [**Adwaita**](https://gnome.pages.gitlab.gnome.org/libadwaita)
 - Minimal configs for:
-  - Waybar
-  - Foot terminal
-  - Fuzzel
-  - Zathura
-  - Fastfetch
-  - Waylock
-  - Tmux
-  - Lf terminal file manager
+  - [Waybar](https://waybar.org)
+  - [Foot terminal](https://codeberg.org/dnkl/foot)
+  - [Fuzzel](https://codeberg.org/dnkl/fuzzel)
+  - [Zathura](https://github.com/pwmt/zathura)
+  - [Fastfetch](https://github.com/fastfetch-cli/fastfetch)
+  - [Waylock](https://codeberg.org/ifreund/waylock)
+  - [Tmux](https://github.com/tmux/tmux)
+  - [Lf terminal file manager](https://github.com/gokcehan/lf)

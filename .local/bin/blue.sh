@@ -1,32 +1,26 @@
 #!/bin/sh
 
-get_device_list() {
-	bluetoothctl devices | awk -F ' ' '{print $3 " " $2}'
-}
+device_list=$(bluetoothctl devices)
+names=$(echo "$device_list" | awk '{$1=$2=""; sub(/^ +/,""); print}')
 
-device_list=$(get_device_list)
-selected_device=$(echo "$device_list" | fuzzel -w 30% --no-mouse \
-	-I --dmenu --lines 2 | awk '{print $1}')
+name=$(echo "$names" | fuzzel -w 30% --no-mouse -I --dmenu --lines 2)
 
-[ -z "$selected_device" ] && notify-send -u normal "No device selected." && exit 1
+[ -z "$name" ] && notify-send -u normal "No device selected." && exit 1
 
-MAC=$(echo "$device_list" | grep "$selected_device" | awk '{print $2}')
-[ -z "$MAC" ] && notify-send -u critical "$selected_device..." "Failed to find MAC address." && exit 1
+MAC=$(echo "$device_list" | awk -v n="$name" '{m=$2; $1=$2=""; sub(/^ +/,""); if ($0 == n) {print m; exit}}')
+[ -z "$MAC" ] && notify-send -u critical "$name" "Failed to find MAC address." && exit 1
 
-connect=$(bluetoothctl info "$MAC" | grep Connected: | awk '{print $2}')
+connect=$(bluetoothctl info "$MAC" | awk '/^[[:space:]]*Connected:/ {print $2; exit}')
 
-if [ "$connect" = "no" ]; then
-	action="connect"
-elif [ "$connect" = "yes" ]; then
-	action="disconnect"
-else
-	notify-send -u normal "$selected_device" "Unknown status"
-	exit 1
-fi
+case "$connect" in
+	no)  action="connect" ;;
+	yes) action="disconnect" ;;
+	*)   notify-send -u normal "$name" "Unknown status"; exit 1 ;;
+esac
 
-notify-send -u low "$selected_device" "Attempting to $action..."
+notify-send -u low "$name" "Attempting to $action..."
 if bluetoothctl "$action" "$MAC"; then
-	notify-send -u normal "$selected_device" "Successfully ${action}ed."
+	notify-send -u normal "$name" "Successfully ${action}ed."
 else
-	notify-send -u critical "$selected_device" "Failed to $action."
+	notify-send -u critical "$name" "Failed to $action."
 fi
